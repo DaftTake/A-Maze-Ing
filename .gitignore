@@ -36,3 +36,7 @@ dist/
 *.txt
 !requirements.txt
 !config/*.txt
+
+# Junk files (previously committed by accident)
+sp
+test

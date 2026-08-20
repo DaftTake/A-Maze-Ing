@@ -1,167 +1,225 @@
+<p align="center">
+  <img src="assets/banner.jpg" alt="A-Maze-Ing Banner" width="100%">
+</p>
 
+<h1 align="center">🧩 A-Maze-Ing</h1>
 
-# A-Maze-ing
+<p align="center">
+  <b>A perfect maze generator with real-time terminal animation, hex encoding & interactive controls</b>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Algorithms-Prim%20%7C%20DFS-00C853?style=for-the-badge" alt="Algorithms">
+  <img src="https://img.shields.io/badge/Package-mazegen-00d2ff?style=for-the-badge" alt="Package">
+  <img src="https://img.shields.io/badge/42_Network-Project-000000?style=for-the-badge&logo=42&logoColor=white" alt="42">
+</p>
+
 ---
 
-<img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXkzc2kzbHJ6YnBmaGpwdWM0cGFvcndpejR0c2RnMnFwaGtiNmw4dyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3j9eE7bkTgHU8yS5BS/giphy.gif">
+<p align="center">
+  <img src="assets/demo.gif" alt="A-Maze-Ing Demo — Terminal maze generation animation" width="700">
+</p>
 
+<p align="center"><i>▲ Real-time animated maze generation in the terminal</i></p>
 
 ---
 
-*This project has been created as part of the 42 curriculum by [skoulal] & [wabbad].*
+## Overview
 
-## Description
+**A-Maze-Ing** generates *perfect mazes* — mazes with exactly **one unique path** between any two cells. The engine implements both **Prim's Algorithm (Frontier-based)** and **Recursive Backtracker (DFS)**, supports embedding custom structural patterns (e.g. "42" / "1337"), generates hexadecimal wall encodings, and renders an animated visualization directly in the terminal at 60 FPS.
 
-A-Maze-ing is a maze generator that creates perfect mazes with a single unique path between entry and exit points. The project implements maze generation algorithms, provides visual representation, and outputs mazes in a hexadecimal wall encoding format.
+### ✨ Key Features
 
-## Features
+- 🎲 **Dual Generation Algorithms** — Prim's (branching complexity) and DFS (long winding corridors)
+- 🎬 **60 FPS Terminal Animation** — smooth step-by-step rendering with ANSI screen buffers
+- 🎮 **Interactive Runtime Controls** — regenerate, cycle color schemes, and animate solution paths on the fly
+- 🔢 **Hex Wall Encoding** — compact 4-bit per cell binary encoding exported to file
+- 🛡️ **Pattern Protection** — embeds custom patterns ("42" / "1337") into the maze grid without breaking solvability
+- 📦 **Modular Package** — core logic bundled as the reusable `mazegen` library (see [`docs/package_usage.md`](docs/package_usage.md))
 
-- Random maze generation with reproducible seeds
-- Perfect maze support (single path between entry and exit)
-- Hexadecimal wall encoding output
-- Visual representation (ASCII/MLX)
-- "42" pattern embedded in maze structure
-- Configurable via text files
+---
 
-## Instructions
+## Architecture
+
+```mermaid
+graph TD
+    A["📄 Config File"] --> B["⚙️ Config Parser"]
+    B --> C["🛡️ Pattern Embedder"]
+    C --> D["🏗️ Maze Generator"]
+    D -->|Prim's / DFS| E["🎬 Frame Animator"]
+    E --> F["📟 ANSI Screen Buffer (Terminal)"]
+    D --> G["🔍 Path Finder (Solution)"]
+    G --> F
+    D --> H["💾 Hex File Writer"]
+
+    style A fill:#1a1a2e,stroke:#00d2ff,color:#e0e0e0
+    style B fill:#1a1a2e,stroke:#00d2ff,color:#e0e0e0
+    style C fill:#16213e,stroke:#ffa500,color:#e0e0e0
+    style D fill:#16213e,stroke:#00ff88,color:#e0e0e0
+    style E fill:#0f3460,stroke:#00d2ff,color:#e0e0e0
+    style F fill:#1a1a2e,stroke:#00d2ff,color:#e0e0e0
+    style G fill:#0f3460,stroke:#00ff88,color:#e0e0e0
+    style H fill:#1a1a2e,stroke:#00d2ff,color:#e0e0e0
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+- Python 3.10+
+- `pip` for dependency management
 
 ### Installation
+
 ```bash
-# Clone the repository
-git clone https://github.com/salah-koulal/A-Maze-Ing
+git clone https://github.com/DaftTake/A-Maze-Ing.git
 cd A-Maze-Ing
 
-# Create virtual environment
+# Create and activate virtual environment
 python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate    # Linux/macOS
+# venv\Scripts\activate     # Windows
 
 # Install dependencies
 make install
 ```
 
 ### Usage
+
 ```bash
 # Run with default configuration
 make run
 
-# Run with custom configuration
-python3 a_maze_ing.py config/my_config.txt
+# Or run directly with Python
+python3 a_maze_ing.py config/default_config.txt
 ```
 
-### Configuration File Format
+---
 
-The configuration file uses KEY=VALUE pairs, one per line:
+## Interactive Controls
 
-WIDTH=20           # Maze width in cells
-HEIGHT=15          # Maze height in cells
-ENTRY=0,0          # Entry coordinates (x,y)
-EXIT=19,14         # Exit coordinates (x,y)
-OUTPUT_FILE=maze.txt  # Output filename
-PERFECT=True       # Perfect maze flag
-SEED=42            # Random seed (optional)
+Once the maze finishes generating, an interactive prompt lets you explore:
 
-Lines starting with `#` are comments and will be ignored.
+| Option | Action |
+|---|---|
+| `1` | **Regenerate new maze** (toggles between Prim's and DFS, randomizes seed) |
+| `2` | **Show / Hide solution path** (smooth step-by-step path animation) |
+| `3` | **Change color theme** (cycles *default*, *vivid*, *emerald*, *ocean*, *amber*) |
+| `4` | **Quit** |
 
-## Maze Generation Algorithm
+---
 
-**Algorithm:** Recursive Backtracker
+## Configuration
 
-**Why this algorithm:**
-- Simple to implement and understand
-- Guarantees perfect mazes (no loops, single path)
-- Creates interesting long, winding passages
-- Memory efficient with stack-based approach
+The configuration file uses `KEY=VALUE` pairs:
 
-**How it works:**
-1. Start at a random cell, mark it as visited
-2. While there are unvisited cells:
-   - If current cell has unvisited neighbors:
-     - Choose random unvisited neighbor
-     - Remove wall between current and neighbor
-     - Move to neighbor
-   - Else backtrack to previous cell
+```ini
+# Maze dimensions
+WIDTH=20
+HEIGHT=15
 
-## Reusable Code
+# Entry and exit coordinates (x,y)
+ENTRY=0,0
+EXIT=19,14
 
-The maze generation logic is packaged as `mazegen` and can be installed via pip:
-```bash
-pip install mazegen-1.0.0-py3-none-any.whl
+# Output file
+OUTPUT_FILE=maze_output.txt
+
+# Perfect maze (exactly one path between entry and exit)
+PERFECT=True
+
+# Random seed for reproducibility (optional)
+SEED=42
 ```
 
-**Usage example:**
+> Lines starting with `#` are treated as comments.
+
+---
+
+## Algorithms Implemented
+
+### 1. Prim's Algorithm (Frontier-based)
+- **Characteristics**: High branching factor, short dead ends, organic and complex structure.
+- **How it works**: Starts from an initial cell and expands the frontier set, randomly carving walls to unvisited adjacent cells until all cells are connected.
+
+### 2. Recursive Backtracker (DFS)
+- **Characteristics**: Low branching factor, long winding passages (high "river" factor).
+- **How it works**: Uses stack-based depth-first search to carve passages as far as possible before backtracking.
+
+---
+
+## Project Structure
+
+```
+A-Maze-Ing/
+├── a_maze_ing.py          # Main executable entry point
+├── pyproject.toml         # Package definition (mazegen)
+├── Makefile               # Build, run, lint, and clean automation
+├── requirements.txt       # Dependencies (flake8, mypy)
+├── config/
+│   └── default_config.txt # Maze configuration file
+├── docs/
+│   └── package_usage.md   # Documentation for using mazegen as a library
+├── src/
+│   └── mazegen/
+│       ├── algorithms/    # Prim's, DFS, and PathFinder
+│       ├── rendering/     # Screen buffer, frame renderer, animator
+│       └── utils/         # Config parser, file writer, pattern embedder
+└── assets/
+    ├── banner.jpg         # Project banner visual
+    └── demo.gif           # Terminal animation demo
+```
+
+---
+
+## Reusable Library: `mazegen`
+
+The maze engine is packaged for standalone use:
+
 ```python
 from mazegen import MazeGenerator
 
-# Create a maze generator
-generator = MazeGenerator(width=20, height=15, seed=42)
+# Initialize and generate
+generator = MazeGenerator("config/default_config.txt")
+maze = generator.generate_maze()
 
-# Generate a perfect maze
-maze = generator.generate(perfect=True)
-
-# Get the solution path
-path = generator.find_path(entry=(0,0), exit=(19,14))
-
-# Access maze structure
-for row in maze.grid:
-    for cell in row:
-        print(cell.walls)
+# Solve
+solution = generator.get_solution()
+print(f"Solution: {solution}")
 ```
 
-See `docs/package_usage.md` for detailed documentation.
+See [`docs/package_usage.md`](docs/package_usage.md) for full API details.
 
-## Development
+---
 
-### Running Tests
-```bash
-make test
-```
+## What I Learned
 
-### Linting
-```bash
-make lint          # Standard linting
-make lint-strict   # Strict type checking
-```
+- **Graph Algorithms in Practice** — implementing MST (Prim's) and DFS traversal for maze synthesis.
+- **Terminal Rendering Architecture** — building double-buffered ANSI frame rendering for flicker-free 60 FPS animations.
+- **Bitwise State Representation** — encoding 4 directional walls into a single hexadecimal character per cell.
+- **Collaborative Engineering** — defining clean module boundaries between core generation, rendering pipelines, and package configuration.
 
-### Cleaning
-```bash
-make clean
-```
+---
 
-## Resources
+## Team
 
-### Classic References
-- [Maze Generation Algorithm - Wikipedia](https://en.wikipedia.org/wiki/Maze_generation_algorithm)
-- [Think Labyrinth: Maze Algorithms](http://www.astrolog.org/labyrnth/algrithm.htm)
-- [Jamis Buck's Maze Generation Blog](https://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap)
+Built collaboratively as part of the [42 Network](https://42.fr/) curriculum:
 
-### AI Usage
-- **Algorithm research:** Used AI to compare different maze generation algorithms
-- **Code structure:** Discussed project organization and module design
-- **Documentation:** Generated initial docstring templates
-- **Debugging:** Asked for help with wall coherence validation logic
+| Role | Member | Scope |
+|---|---|---|
+| **Core Logic** | [Salah Eddine Koulal](https://github.com/salah-koulal) (skoulal) | Maze generation, algorithms, file I/O |
+| **Interface & Integration** | [Walid Abbad](https://github.com/DaftTake) (wabbad) | Visualization, packaging, integration |
 
-## Team & Project Management
+---
 
-### Team Members
-- **Member 1 (Core Logic):** [Salah eddine Koulal/ skoulal] - Maze generation, algorithms, file I/O
-- **Member 2 (Interface):** [walid / wabbad] - Visualization, packaging, integration
+## License & Credits
 
+Educational project created for [1337](https://1337.ma/) / [42 Network](https://42.fr/).
 
-### What Worked Well
-- Early agreement on data structures prevented integration issues
-- Daily standups kept us aligned
-- Pair programming on complex algorithms
+---
 
-### What Could Be Improved
-- Should have started testing earlier
-- Need better git branching strategy
-- Documentation could be more detailed
-
-### Tools Used
-- **Git/GitHub:** Version control
-- **Pytest:** Testing framework
-- **Discord:** Daily communication
-
-## License
-
-This is an educational project for 42 School.
+<p align="center">
+  <sub>Built with ❤️ at <a href="https://1337.ma/">1337 Rabat</a> (42 Network) 🇲🇦</sub>
+</p>
